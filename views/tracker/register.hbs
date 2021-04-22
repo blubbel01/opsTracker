@@ -1,0 +1,35 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    <div class="card-title">Registrieren</div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="inputUserName">Spielername</label>
+                            <input type="text" class="form-control" id="inputForumId" placeholder="Spielername" name="name">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputPassword">Passwort</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Passwort" name="password">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputPassword2">Passwort wiederholen</label>
+                            <input type="password" class="form-control" id="inputPassword2" placeholder="Passwort wiederholen" name="password2">
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Registrieren</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

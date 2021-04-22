@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LCN | {{ title }}</title>
+        {{{ style 'style' }}}
+        {{{ style 'bootstrap.min' }}}
+
+        {{#> head-block}}
+        {{/head-block}}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">La Cosa Nostra</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {{#if isAuthenticated}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (eq '/' req.originalUrl) 'active' '' }}" aria-current="page" href="/">Home</a>
+                            </li>
+                            {{#ifGte account.Role.permissionLevel 0}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/payment' req.originalUrl) 'active' '' }}" href="/payment">Auszahlung</a>
+                            </li>
+                            {{/ifGte}}
+
+
+                            {{#ifGte account.Role.permissionLevel 4}}
+                                <li class="nav-item">
+                                    <a class="nav-link {{ternary (isRouteActive '/leader/users' req.originalUrl) 'active' '' }}" href="/leader/users">Benutzerverwaltung</a>
+                                </li>
+                            {{/ifGte}}
+                            {{#ifGte account.Role.permissionLevel 5}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/leader/roles' req.originalUrl) 'active' '' }}" href="/leader/roles">Rollenverwaltung</a>
+                            </li>
+                            {{/ifGte}}
+                            {{#ifGte account.Role.permissionLevel 4}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/leader/operationTypes' req.originalUrl) 'active' '' }}" href="/leader/operationTypes">Aktionsverwaltung</a>
+                            </li>
+                            {{/ifGte}}
+
+                        {{/if}}
+                    </ul>
+                    <ul class="navbar-nav">
+                        {{#if isUnauthenticated}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/login' req.originalUrl) 'active' '' }}" href="/login">Anmelden</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/register' req.originalUrl) 'active' '' }}" href="/register">Registrieren</a>
+                            </li>
+                        {{/if}}
+                        {{#if isAuthenticated}}
+                            <li class="nav-item">
+                                <a class="nav-link {{ternary (isRouteActive '/profile' req.originalUrl) 'active' '' }}" href="/profile">{{account.name}}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">Abmelden</a>
+                            </li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <br>
+
+
+        <div class="container">
+            {{#if message.error}}
+                <div class="alert alert-danger" role="alert">
+                    {{{ message.error }}}
+                </div>
+            {{/if}}
+
+            {{#if message.success}}
+                <div class="alert alert-success" role="alert">
+                    {{{ message.success }}}
+                </div>
+            {{/if}}
+
+            {{#if message.info}}
+                <div class="alert alert-info" role="alert">
+                    {{{ message.info }}}
+                </div>
+            {{/if}}
+        </div>
+
+        {{#> content-block}}
+        {{!-- Content goes here. --}}
+        {{/content-block}}
+
+        {{{ script 'bootstrap.min' }}}
+        {{{ script 'popper.min' }}}
+        {{{ script 'jquery.min' }}}
+        {{{ script 'fontawesome-all.min' }}}
+    </body>
+</html>

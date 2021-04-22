@@ -1,0 +1,62 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    <div class="card-title">
+                        Neue Aktion eintragen
+                        <a href="/payment" class="btn btn-outline-dark float-end"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="selectionOperation">Aktion</label>
+                            <select class="form-select" id="selectionOperation" name="operation" required autofocus>
+                                {{#each operationTypes}}
+                                    <option value="{{this.id}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="inputDate">Datum</label>
+                                    <input type="date" class="form-control" id="inputDate" placeholder="" name="date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="inputTime">Zeit</label>
+                                    <input type="time" class="form-control" id="inputTime" placeholder="" name="time" required>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputLocation">Ort</label>
+                            <input type="text" class="form-control" id="inputLocation" placeholder="" name="location" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputProofs">Beweismittel</label>
+                            <input type="text" class="form-control" id="inputProofs" placeholder="z.B. Links von Screenshots" name="proofs" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputTsValidate">TeamSpeak Validierung</label>
+                            <textarea type="text" class="form-control" id="inputTsValidate" name="tsValidate" required></textarea>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Eintragen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

@@ -1,0 +1,30 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    <div class="card-title">Anmelden</div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="inputUserName">Spielername</label>
+                            <input type="text" class="form-control" id="inputUserName" placeholder="Spielername" name="username">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="inputPassword">Passwort</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Passwort" name="password">
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Anmelden</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

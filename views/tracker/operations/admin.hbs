@@ -1,0 +1,51 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    Aktionstypen
+                    <a href="/payment" class="btn btn-outline-dark float-end"><i class="fa fa-arrow-left"></i></a>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Aktion</th>
+                            <th scope="col">Aktionszeitpunkt</th>
+                            <th scope="col">Teilnehmer</th>
+                            <th scope="col">Beweise</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {{#each operations}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.OperationType.name}}</td>
+                                <td>{{formatTime this.timestamp}}</td>
+                                <td>
+                                    {{#each this.Users}}
+                                        <span class="badge bg-dark m-1">{{this.name}}</span>
+                                    {{/each}}
+                                </td>
+                                <td>{{this.proof}}</td>
+                                <td>
+                                    <a href="/operations/manage/{{this.id}}/validate" class="btn btn-success"><i class="fa fa-check"></i></a>
+                                    <a href="/operations/manage/{{this.id}}/delete" class="btn btn-outline-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {{/each}}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

@@ -1,0 +1,45 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    Benutzerliste
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">ForumId</th>
+                            <th scope="col">Rang</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {{#each users}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.forumId}}</td>
+                                <td>{{this.roleName}}</td>
+                                <td>
+                                    {{#if this.allowModify}}
+                                        <a href="/leader/users/{{this.id}}" class="btn btn-outline-dark"><i class="fa fa-edit"></i></a>
+                                        <a href="/leader/users/{{this.id}}/resetPassword" class="btn btn-outline-warning"><i class="fa fa-key"></i></a>
+                                        <a href="/leader/users/{{this.id}}/delete" class="btn btn-outline-danger"><i class="fa fa-times"></i></a>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                        {{/each}}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

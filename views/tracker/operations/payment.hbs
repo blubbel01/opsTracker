@@ -1,0 +1,66 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    Auszahlung
+
+
+                    <a href="/operations/create" class="btn btn-success float-end m-1"><i class="fa fa-plus"></i></a>
+                    <a href="/operations/stats" class="btn btn-outline-dark float-end m-1"><i class="fa fa-clock"></i></a>
+                    {{#ifGte account.Role.permissionLevel 4}}
+                        <a href="/operations/manage" class="btn btn-outline-primary float-end m-1"><i class="fa fa-list"></i></a>
+                    {{/ifGte}}
+                </div>
+
+                {{#ifGte account.Role.permissionLevel 4}}
+                    <form method="post">
+
+                        <div class="input-group m-auto mt-3 w-50">
+                            <input type="number" min="0" class="form-control" placeholder="975000" name="money" value="{{paymentMoneyTotal}}" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-save"></i></button>
+                            </div>
+                        </div>
+
+                    </form>
+                {{/ifGte}}
+
+                <p class="m-auto mt-3 w-50 text-center">
+                    Es wurden <b>{{money paymentMoneyTotal}}</b> als Auszahlung festgelegt.<br>
+                    Es wurden <b>{{totalPoints}}</b> Punkte verteilt.<br>
+                </p>
+
+                <hr>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Rang</th>
+                            <th scope="col">Punkte</th>
+                            <th scope="col">Gehalt</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {{#each members}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.roleName}}</td>
+                                <td>{{this.points}}</td>
+                                <td>{{money this.money}}</td>
+                            </tr>
+                        {{/each}}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}
