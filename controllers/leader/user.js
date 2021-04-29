@@ -37,12 +37,14 @@ exports.show = async (req, res) => {
 
     let whereCondition = {};
 
-    if (req.user.Role.permissionLevel <= 4) {
-        whereCondition = {
-            permissionLevel: {
-                [Op.lt]: req.user.Role.permissionLevel
-            }
-        };
+    if (!process.env.IS_SETUP) {
+        if (req.user.Role.permissionLevel <= 4) {
+            whereCondition = {
+                permissionLevel: {
+                    [Op.lt]: req.user.Role.permissionLevel
+                }
+            };
+        }
     }
 
     const roles = await db.models.Role.findAll({
@@ -66,10 +68,12 @@ exports.update = async (req, res) => {
         return res.redirect("/leader/users");
     }
 
-    if (req.user.Role.permissionLevel <= 4) {
-        if (role.permissionLevel >= req.user.Role.permissionLevel) {
-            await req.flash('error', 'Du kannst nur bis zu deinem eignen Rang setzten!');
-            return res.redirect("/leader/users");
+    if (!process.env.IS_SETUP) {
+        if (req.user.Role.permissionLevel <= 4) {
+            if (role.permissionLevel >= req.user.Role.permissionLevel) {
+                await req.flash('error', 'Du kannst nur bis zu deinem eignen Rang setzten!');
+                return res.redirect("/leader/users");
+            }
         }
     }
 
