@@ -172,4 +172,11 @@ module.exports = async function (hbs) {
 
         }).format(number).replace(/,/g, '.')
     });
+
+    hbs.registerHelper("urlify", function (text) {
+        const urlRegex = /(?<!=")(\b[\w]+:\/\/[\w-?&;#~=:\.\/\@]+[\w\/])/gis;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '">' + url + '</a>';
+        });
+    });
 };
