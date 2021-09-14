@@ -4,6 +4,60 @@ const moment = require('moment');
 moment.locale('de');
 const {Op} = require('sequelize');
 
+exports.index = async (req, res) => {
+
+    const startDate = moment(Date.now() - (30 * 60 * 1000));
+
+    const operations = (await db.models.Operation.findAll({
+        include: [
+            "OperationType",
+            "Users",
+        ],
+        where: {
+            timestamp: {
+                [Op.gte]: startDate
+            }
+        }
+    })).filter(o => !o.valid);
+
+    await Promise.all(operations.map(op => {
+        op.isOwnMember = !!op.Users.find(u => u.id === req.user.id);
+        op.time = new Date(op.timestamp).getTime();
+        return op;
+    }));
+
+
+    res.render('tracker/operations/index', {
+        title: 'Aktionen',
+        operations
+    });
+};
+exports.setMembership = async (req, res) => {
+    const {
+        id
+    } = req.body;
+    const operation = await db.models.Operation.findByPk(id, {
+        include: [
+            "Users"
+        ]
+    });
+
+    if (!operation) {
+        await req.flash('error', 'Die Aktion wurde nicht gefunden.');
+        return res.redirect('/operations');
+    }
+
+    if (!!operation.Users.find(u => u.id === req.user.id)) {
+        await operation.removeUser(req.user);
+        await req.flash('success', 'Du hast dich erfolgreich ausgetragen.');
+    } else {
+        await operation.addUser(req.user);
+        await req.flash('success', 'Du hast dich erfolgreich eingetragen.');
+    }
+
+    res.redirect('/operations');
+};
+
 exports.setTempMoney = async (req, res) => {
     const {money} = req.body;
     tempMoney = money;
@@ -129,8 +183,9 @@ exports.store = async (req, res) => {
     });
 
     await req.flash('success', 'Die Aktion wurde erfolgreich eingetragen.');
-    res.redirect('/payment');
+    return res.redirect('/operations');
 };
+
 exports.managementIndex = async (req, res) => {
     const operations = (await db.models.Operation.findAll({
         include: [
@@ -145,12 +200,13 @@ exports.managementIndex = async (req, res) => {
         return op;
     }));
 
+    // return res.json(operations);
+
     res.render('tracker/operations/admin', {
         title: 'Aktionsverwaltung',
         operations,
     });
 };
-
 exports.managementValidate = async (req, res) => {
     const {id} = req.params;
 
@@ -180,8 +236,82 @@ exports.managementDelete = async (req, res) => {
     await req.flash('success', 'Die Aktion wurde erfolgreich gelöscht.');
     res.redirect('/operations/manage');
 };
+exports.managementAddUser = async (req, res) => {
+    const {id} = req.params;
+
+    const operation = await db.models.Operation.findByPk(id, {
+        include: [
+            "OperationType",
+            "Users"
+        ]
+    });
+
+    if (!operation) {
+        await req.flash('error', 'Die Aktion wurde nicht gefunden.');
+        return res.redirect('/operations/manage');
+    }
+
+    const {
+        userName
+    } = req.body;
+
+    if (!userName) {
+        return res.redirect('/operations/manage');
+    }
+
+    const user = await db.models.User.findOne({
+        where: {
+            name: userName
+        }
+    });
+
+    if (!user) {
+        await req.flash('error', 'Dieser Spieler existiert nicht!');
+        return res.redirect('/operations/manage');
+    }
+
+    if (!operation.Users.find(u => u.id === user.id)) {
+        await operation.addUser(user);
+        await req.flash('success', `Spieler ${user.name}#${user.id} wurde erfolgreich zu ${operation.OperationType.name}#${operation.id} hinzugefügt.`);
+    } else {
+        await req.flash('info', `Spieler ${user.name}#${user.id} ist bereits in ${operation.OperationType.name}#${operation.id} eingetragen.`);
+    }
+
+    return res.redirect('/operations/manage');
+};
+exports.managementRemoveUser = async (req, res) => {
+    const {id} = req.params;
+
+    const operation = await db.models.Operation.findByPk(id, {
+        include: [
+            "OperationType",
+            "Users"
+        ]
+    });
+
+    if (!operation) {
+        await req.flash('error', 'Die Aktion wurde nicht gefunden.');
+        return res.redirect('/operations/manage');
+    }
+
+    const {
+        userId
+    } = req.body;
+
+    const user = await db.models.User.findByPk(userId);
+    if (!user) {
+        await req.flash('error', 'Dieser Spieler existiert nicht!');
+        return res.redirect('/operations/manage');
+    }
+
+    await operation.removeUser(user);
+
+    await req.flash('success', `Spieler ${user.name}#${user.id} wurde erfolgreich aus ${operation.OperationType.name}#${operation.id} entfernt.`);
+    return res.redirect('/operations/manage');
+};
+
 exports.statisticsIndex = async (req, res) => {
-    let {start, stop} = req.query;
+    let {start, stop, money} = req.query;
     if (start && stop) {
         start = new Date(start).getTime();
         stop = new Date(stop).getTime();
@@ -189,6 +319,8 @@ exports.statisticsIndex = async (req, res) => {
         start = moment().startOf("week");
         stop = moment().endOf("week");
     }
+
+    money = Number(money) || 0;
 
 
     const operations = await db.models.Operation.findAll({
@@ -239,11 +371,13 @@ exports.statisticsIndex = async (req, res) => {
 
     users.forEach(user => {
         if (!!user.Role) {
+            const points = !!members[user.id] ? members[user.id].points : 0;
             membersArray.push({
                 name: user.name,
                 roleName: user.Role.name,
                 sortId: user.Role.permissionLevel,
-                points: !!members[user.id] ? members[user.id].points : 0,
+                points,
+                money: Math.floor((money / (totalPoints === 0 ? 1 : totalPoints)) * points),
             });
         }
     });
@@ -262,5 +396,6 @@ exports.statisticsIndex = async (req, res) => {
         totalPoints,
         start: moment.unix(new Date(start).getTime() / 1000).format('YYYY-MM-DD'),
         stop: moment.unix(new Date(stop).getTime() / 1000).format('YYYY-MM-DD'),
+        money,
     });
 };

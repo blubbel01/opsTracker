@@ -27,8 +27,19 @@
                                 <a class="nav-link {{ternary (eq '/' req.originalUrl) 'active' '' }}" aria-current="page" href="/">Home</a>
                             </li>
                             {{#ifGte account.Role.permissionLevel 0}}
-                            <li class="nav-item">
-                                <a class="nav-link {{ternary (isRouteActive '/payment' req.originalUrl) 'active' '' }}" href="/payment">Auszahlung</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ternary (isRouteActive '/payment' req.originalUrl) 'active' '' }} {{ternary (isRouteActive '/operations' req.originalUrl) 'active' '' }}" href="#" id="navbarOperations" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Aktionstracker
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="navbarOperations">
+                                    <a class="dropdown-item {{ternary (isRouteActive '/operations' req.originalUrl) 'active' '' }}" href="/operations">
+                                        <i class="fas fa-list"></i> Aktionen
+                                    </a>
+                                    <a class="dropdown-item {{ternary (isRouteActive '/payment' req.originalUrl) 'active' '' }}" href="/payment">
+                                        <i class="fas fa-list"></i> Auszahlung
+                                    </a>
+                                </div>
                             </li>
                             {{/ifGte}}
 
@@ -81,19 +92,19 @@
 
         <div class="container">
             {{#if message.error}}
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{{ message.error }}}
                 </div>
             {{/if}}
 
             {{#if message.success}}
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{{ message.success }}}
                 </div>
             {{/if}}
 
             {{#if message.info}}
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
                     {{{ message.info }}}
                 </div>
             {{/if}}

@@ -17,6 +17,9 @@ router.post('/register', auth.isUnauthenticated, loginController.submitRegister)
 router.get('/logout', auth.isAuthenticated, loginController.logout);
 
 /* Operations System */
+router.get('/operations', auth.isAuthenticated, auth.hasRank(0), operationController.index);
+router.post('/operations', auth.isAuthenticated, auth.hasRank(0), operationController.setMembership);
+
 router.get('/payment', auth.isAuthenticated, auth.hasRank(0), operationController.payment);
 router.post('/payment', auth.isAuthenticated, auth.hasRank(0), operationController.setTempMoney);
 router.get('/operations/create', auth.isAuthenticated, auth.hasRank(0), operationController.create);
@@ -24,6 +27,8 @@ router.post('/operations/create', auth.isAuthenticated, auth.hasRank(0), operati
 router.get('/operations/manage', auth.isAuthenticated, auth.hasRank(4), operationController.managementIndex);
 router.get('/operations/manage/:id/validate', auth.isAuthenticated, auth.hasRank(4), operationController.managementValidate);
 router.get('/operations/manage/:id/delete', auth.isAuthenticated, auth.hasRank(4), operationController.managementDelete);
+router.post('/operations/manage/:id/addUser', auth.isAuthenticated, auth.hasRank(0), operationController.managementAddUser);
+router.post('/operations/manage/:id/removeUser', auth.isAuthenticated, auth.hasRank(0), operationController.managementRemoveUser);
 
 router.get('/operations/stats', auth.isAuthenticated, auth.hasRank(0), operationController.statisticsIndex);
 

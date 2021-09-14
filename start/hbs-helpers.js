@@ -175,4 +175,14 @@ module.exports = async function (hbs) {
             return false;
         return user.role.permissionLevel;
     });
+
+    hbs.registerHelper("money", function (number) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0,
+            minimumFractionDigits: 0,
+
+        }).format(number).replace(/,/g, '.')
+    });
 };

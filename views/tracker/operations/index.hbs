@@ -21,7 +21,7 @@
                                     <form method="post">
                                         <input type="hidden" name="id" value="{{this.id}}">
                                         {{#if this.isOwnMember}}
-                                            <button type="submit" class="btn btn-outline-warning float-end"><i class="fas fa-times"></i></button>
+                                            <button type="submit" class="btn btn-outline-warning float-end"><i class="fas fa-minus"></i></button>
                                         {{else}}
                                             <button type="submit" class="btn btn-outline-success float-end"><i class="fas fa-plus"></i></button>
                                         {{/if}}
@@ -35,7 +35,7 @@
 
                                     <div class="card-text d-flex flex-wrap justify-content-evenly">
                                         {{#each this.Users}}
-                                            <span class="badge bg-dark m-1">{{this.name}}</span>
+                                            <span class="badge bg-light m-1">{{this.name}}</span>
                                         {{/each}}
                                     </div>
                                 </div>

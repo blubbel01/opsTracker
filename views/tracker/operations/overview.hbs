@@ -7,25 +7,31 @@
                 <div class="card-header">
                     Übesicht
 
-                    <a href="/payment" class="btn btn-outline-dark float-end m-1"><i class="fa fa-arrow-left"></i></a>
+                    <a href="/payment" class="btn btn-outline-light float-end m-1"><i class="fa fa-arrow-left"></i></a>
                 </div>
 
                 <form method="get">
 
                     <div class="row" style="padding-left: 2%">
-                        <div class="col-md-5 col-sm-6">
+                        <div class="col-md-3 col-sm-4">
                             <div class="form-group">
                                 <label for="inputTime1">Start</label>
                                 <input type="date" class="form-control" id="inputTime1" placeholder="" name="start" value="{{start}}" required>
                             </div>
                         </div>
-                        <div class="col-md-5 col-sm-6">
+                        <div class="col-md-3 col-sm-4">
                             <div class="form-group">
                                 <label for="inputTime2">Ende</label>
                                 <input type="date" class="form-control" id="inputTime2" placeholder="" name="stop" value="{{stop}}" required>
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-12">
+                        <div class="col-md-3 col-sm-2">
+                            <div class="form-group">
+                                <label for="inputTime2">Geld</label>
+                                <input type="number" class="form-control" id="inputMoney" placeholder="" name="money" min="0" value="{{this.money}}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-2">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary mt-4">Suchen</button>
                             </div>
@@ -42,6 +48,7 @@
                             <th scope="col">Name</th>
                             <th scope="col">Rang</th>
                             <th scope="col">Punkte</th>
+                            <th scope="col">Money</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -51,6 +58,7 @@
                                 <td>{{this.name}}</td>
                                 <td>{{this.roleName}}</td>
                                 <td>{{this.points}}</td>
+                                <td>{{money this.money}}</td>
                             </tr>
                         {{/each}}
 
