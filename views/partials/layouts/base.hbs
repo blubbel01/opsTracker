@@ -33,8 +33,8 @@
                             {{/ifGte}}
 
                             {{#ifGte account.Role.permissionLevel 4}}
-                            <li class="nav-item dropdown {{ternary (isRouteActive '/leader' req.originalUrl) 'active' '' }}">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ternary (isRouteActive '/leader' req.originalUrl) 'active' '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Leader
                                 </a>
 
