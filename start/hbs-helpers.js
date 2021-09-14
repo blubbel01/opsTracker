@@ -171,8 +171,8 @@ module.exports = async function (hbs) {
                 }
             ]
         });
-        if (!user)
-            return false;
+        if (!user.role)
+            return -1;
         return user.role.permissionLevel;
     });
 
