@@ -19,7 +19,7 @@ class Authentication {
     static hasRank(minRank) {
         return function(req, res, next) {
 
-            if(process.env.IS_SETUP) {
+            if(process.env.IS_SETUP === true) {
                 return next();
             }
 

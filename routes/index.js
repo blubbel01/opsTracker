@@ -25,6 +25,7 @@ router.post('/payment', auth.isAuthenticated, auth.hasRank(0), operationControll
 router.get('/operations/create', auth.isAuthenticated, auth.hasRank(0), operationController.create);
 router.post('/operations/create', auth.isAuthenticated, auth.hasRank(0), operationController.store);
 router.get('/operations/manage', auth.isAuthenticated, auth.hasRank(4), operationController.managementIndex);
+
 router.get('/operations/manage/:id/validate', auth.isAuthenticated, auth.hasRank(4), operationController.managementValidate);
 router.get('/operations/manage/:id/delete', auth.isAuthenticated, auth.hasRank(4), operationController.managementDelete);
 router.post('/operations/manage/:id/addUser', auth.isAuthenticated, auth.hasRank(0), operationController.managementAddUser);
