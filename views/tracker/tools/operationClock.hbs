@@ -1,0 +1,82 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    Wilkommen bei {{ env.GANG_NAME }}
+                </div>
+                <div class="card-body">
+                    <p id="timer">00:00:00</p>
+
+                    <table style="width:100%">
+                        <style>
+                            th {
+                                text-align: left;
+                            }
+                        </style>
+
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Verbliebene Zeit</th>
+                        </tr>
+                        </thead>
+                        <tbody id="timer_table">
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <div class="form-group">
+                        <label for="inputStartTime">Startzeit</label>
+                        <input type="text" class="form-control" id="inputStartTime" placeholder="12.12.2021 13:02:22">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Ort</label>
+                        <div>
+                            <select class="form-control" id="inputOperationType">
+                                <option value="ammu">Ammunation Raub</option>
+                                <option value="br">Bankraub</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <br>
+                    <button class="btn btn-primary" id="timer_start_btn">Starten</button>
+
+                </div>
+                <div class="card-footer text-center text-muted">
+                    &copy; {{yearNow}} - Shepard <small>(Vio Development)</small>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $('#timer_start_btn').click(() => {
+                const startTime = new Date($('#inputStartTime').val());
+                const operationType = $('#inputOperationType').val();
+
+                switch (operationType) {
+                    case "ammu":
+                        {
+                            const timeTable = {
+                            }
+                        }
+                        break;
+                    case "br":
+                        break;
+                }
+            });
+        </script>
+
+    {{/inline}}
+
+{{/layouts/base}}

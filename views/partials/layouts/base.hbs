@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>LCN | {{ title }}</title>
+        <title>{{ env.GANG_NAME }} | {{ title }}</title>
         {{{ style 'style' }}}
         {{{ style 'bootstrap.min' }}}
+
+        {{{ script 'bootstrap.min' }}}
+        {{{ script 'popper.min' }}}
+        {{{ script 'jquery.min' }}}
+        {{{ script 'fontawesome-all.min' }}}
 
         {{#> head-block}}
         {{/head-block}}
@@ -11,7 +16,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">La Cosa Nostra</a>
+                <a class="navbar-brand" href="/">{{ env.GANG_NAME }}</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -27,20 +32,23 @@
                             </li>
                             {{/ifGte}}
 
+                            {{#ifGte account.Role.permissionLevel 4}}
+                            <li class="nav-item dropdown {{ternary (isRouteActive '/leader' req.originalUrl) 'active' '' }}">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Leader
+                                </a>
 
-                            {{#ifGte account.Role.permissionLevel 4}}
-                                <li class="nav-item">
-                                    <a class="nav-link {{ternary (isRouteActive '/leader/users' req.originalUrl) 'active' '' }}" href="/leader/users">Benutzerverwaltung</a>
-                                </li>
-                            {{/ifGte}}
-                            {{#ifGte account.Role.permissionLevel 5}}
-                            <li class="nav-item">
-                                <a class="nav-link {{ternary (isRouteActive '/leader/roles' req.originalUrl) 'active' '' }}" href="/leader/roles">Rollenverwaltung</a>
-                            </li>
-                            {{/ifGte}}
-                            {{#ifGte account.Role.permissionLevel 4}}
-                            <li class="nav-item">
-                                <a class="nav-link {{ternary (isRouteActive '/leader/operationTypes' req.originalUrl) 'active' '' }}" href="/leader/operationTypes">Aktionsverwaltung</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item {{ternary (isRouteActive '/leader/users' req.originalUrl) 'active' '' }}" href="/leader/users">
+                                        <i class="fas fa-list"></i> Benutzerverwaltung
+                                    </a>
+                                    <a class="dropdown-item {{ternary (isRouteActive '/leader/roles' req.originalUrl) 'active' '' }}" href="/leader/roles">
+                                        <i class="fas fa-list"></i> Rollenverwaltung
+                                    </a>
+                                    <a class="dropdown-item {{ternary (isRouteActive '/leader/operationTypes' req.originalUrl) 'active' '' }}" href="/leader/operationTypes">
+                                        <i class="fas fa-list"></i> Aktionsverwaltung
+                                    </a>
+                                </div>
                             </li>
                             {{/ifGte}}
 
@@ -94,10 +102,5 @@
         {{#> content-block}}
         {{!-- Content goes here. --}}
         {{/content-block}}
-
-        {{{ script 'bootstrap.min' }}}
-        {{{ script 'popper.min' }}}
-        {{{ script 'jquery.min' }}}
-        {{{ script 'fontawesome-all.min' }}}
     </body>
 </html>

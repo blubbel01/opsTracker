@@ -13,6 +13,8 @@ module.exports = () => {
             return !auth.getUser(req.session.id);
         };
 
+        res.locals.env = process.env;
+
         if (auth.getUser(req.session.id)) {
             req.user = await db.models.User.findByPk(auth.getUser(req.session.id), {
                 include: [
