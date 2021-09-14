@@ -23,11 +23,11 @@ class Authentication {
                 return next();
             }
 
-            if(!req.user.role) {
+            if(!req.user.Role) {
                 return res.redirect('/login');
             }
 
-            if (req.user.role.permissionLevel >= minRank) {
+            if (req.user.Role.permissionLevel >= minRank) {
                 return next();
             }
 

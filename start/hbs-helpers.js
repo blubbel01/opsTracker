@@ -163,19 +163,6 @@ module.exports = async function (hbs) {
         return moment.unix(new Date(timestamp).getTime() / 1000).add(-1,'hours').format('DD.MM.YYYY, HH:mm');
     });
 
-    hbs.registerHelper("getGivenUserRank", async function (userId) {
-        const user = await db.models.User.findByPk(userId, {
-            include: [
-                {
-                    association: "Role"
-                }
-            ]
-        });
-        if (!user.role)
-            return -1;
-        return user.role.permissionLevel;
-    });
-
     hbs.registerHelper("money", function (number) {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',

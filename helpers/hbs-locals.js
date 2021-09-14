@@ -24,8 +24,16 @@ module.exports = () => {
                 ]
             });
 
+            if (!req.user.Role) {
+                req.user.Role = {
+                    permissionLevel: -1,
+                    name: "",
+                    id: -1,
+                }
+            }
+
             if (process.env.IS_SETUP) {
-                req.user.role = {
+                req.user.Role = {
                     permissionLevel: 5,
                     name: "IS_SETUP",
                     id: -1,

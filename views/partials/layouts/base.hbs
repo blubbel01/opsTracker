@@ -26,7 +26,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ternary (eq '/' req.originalUrl) 'active' '' }}" aria-current="page" href="/">Home</a>
                             </li>
-                            {{#ifGte (getGivenUserRank account.id) 0}}
+                            {{#ifGte account.Role.permissionLevel 0}}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ternary (isRouteActive '/payment' req.originalUrl) 'active' '' }} {{ternary (isRouteActive '/operations' req.originalUrl) 'active' '' }}" href="#" id="navbarOperations" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Aktionstracker
@@ -43,7 +43,7 @@
                             </li>
                             {{/ifGte}}
 
-                            {{#ifGte (getGivenUserRank account.id) 4}}
+                            {{#ifGte account.Role.permissionLevel 4}}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ternary (isRouteActive '/leader' req.originalUrl) 'active' '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Leader
