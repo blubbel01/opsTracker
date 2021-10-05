@@ -59,7 +59,7 @@ exports.show = async (req, res) => {
 };
 exports.update = async (req, res) => {
     const {id} = req.params;
-    const {roleId, forumId} = req.body;
+    const {roleId, forumId, name} = req.body;
     const user = await db.models.User.findByPk(id);
     const role = await db.models.Role.findByPk(roleId);
 
@@ -81,6 +81,7 @@ exports.update = async (req, res) => {
     if (user) {
         user.roleId = roleId;
         user.forumId = forumId;
+        user.name = name;
         await user.save();
         await req.flash('success', `Du hast den Spieler ${user.name} erfolgreich bearbeitet!`);
     } else {
