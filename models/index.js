@@ -6,6 +6,16 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
 
+console.log('Try connect: \n' + JSON.parse({
+    db: process.env.MYSSQL_DATABASE,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
+    logging: false,
+    dialect: 'mysql',
+}))
+
 const sequelize = new Sequelize(process.env.MYSSQL_DATABASE, process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {
     host: process.env.MYSQL_HOST,
     port: process.env.MYSQL_PORT,
