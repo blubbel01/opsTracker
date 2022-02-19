@@ -1,0 +1,41 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    Fraktionsliste
+                    <a href="/leader/faction/create" class="btn btn-outline-success float-end"><i class="fa fa-plus"></i></a>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {{#each factions}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.name}}</td>
+                                <td>
+                                    <a href="/leader/faction/{{this.id}}" class="btn btn-outline-light"><i class="fa fa-edit"></i></a>
+                                    <a href="/leader/faction/{{this.id}}/delete" class="btn btn-outline-danger"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                        {{/each}}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}

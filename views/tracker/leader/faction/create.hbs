@@ -1,0 +1,28 @@
+{{#> layouts/base }}
+
+    {{#*inline "content-block"}}
+
+        <div class="container">
+            <div class="card col-12">
+                <div class="card-header">
+                    <div class="card-title">
+                        Neue Fraktion erstellen
+                        <a href="/leader/faction/create" class="btn btn-outline-light float-end"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="inputName">Name</label>
+                            <input type="text" class="form-control" id="inputName" placeholder="" name="name" required>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Erstellen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{/inline}}
+
+{{/layouts/base}}
