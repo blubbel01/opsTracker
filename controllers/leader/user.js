@@ -51,20 +51,32 @@ exports.show = async (req, res) => {
         where: whereCondition,
     });
 
+    const factions = await db.models.Faction.findAll();
+
     res.render("tracker/leader/user/show", {
         title: `${user.name} bearbeiten`,
         thisUser: user,
-        roles
+        roles,
+        factions,
     });
 };
 exports.update = async (req, res) => {
     const {id} = req.params;
-    const {roleId, forumId, name} = req.body;
+    const {roleId, factionId, forumId, name, isGettingPayed, isInstructor} = req.body;
+
+    // return res.json(req.body);
+
     const user = await db.models.User.findByPk(id);
     const role = await db.models.Role.findByPk(roleId);
+    const faction = await db.models.Faction.findByPk(factionId);
 
     if (!role) {
         await req.flash('error', 'Ausgewählter Rang existiert nicht!');
+        return res.redirect("/leader/users");
+    }
+
+    if (!faction) {
+        await req.flash('error', 'Ausgewählte Fraktion existiert nicht!');
         return res.redirect("/leader/users");
     }
 
@@ -80,8 +92,11 @@ exports.update = async (req, res) => {
 
     if (user) {
         user.roleId = roleId;
+        user.factionId = factionId;
         user.forumId = forumId;
         user.name = name;
+        user.isGettingPayed = isGettingPayed;
+        user.isInstructor = isInstructor;
         await user.save();
         await req.flash('success', `Du hast den Spieler ${user.name} erfolgreich bearbeitet!`);
     } else {

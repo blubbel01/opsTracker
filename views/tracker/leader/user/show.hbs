@@ -13,12 +13,38 @@
                 <div class="card-body">
                     <form method="post">
                         <div class="form-group">
-                            <label for="selectionRole">Rang</label>
-                            <select class="form-select" id="selectionRole" name="roleId" required>
+                            <label for="factionId">Fraktion</label>
+                            <select class="form-select" id="factionId" name="factionId" required>
+                                <option value="-1" {{#unless thisUser.factionId}}selected{{/unless}}>keine Fraktion</option>
+                                {{#each factions}}
+                                    <option value="{{this.id}}" {{#if (eq ../thisUser.factionId this.id)}}selected{{/if}}>{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="roleId">Rang</label>
+                            <select class="form-select" id="roleId" name="roleId" required>
                                 <option value="-1" {{#unless thisUser.roleId}}selected{{/unless}}>keinen Rang</option>
                                 {{#each roles}}
                                     <option value="{{this.id}}" {{#if (eq ../thisUser.roleId this.id)}}selected{{/if}}>{{this.name}}</option>
                                 {{/each}}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="isGettingPayed">Auszahlung</label>
+                            <select class="form-select" id="isGettingPayed" name="isGettingPayed" required>
+                                <option value="0" {{#unless thisUser.isGettingPayed}}selected{{/unless}}>Deaktiviert</option>
+                                <option value="1" {{#if thisUser.isGettingPayed}}selected{{/if}}>Aktiviert</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="isInstructor">Ausbilder</label>
+                            <select class="form-select" id="isInstructor" name="isInstructor" required>
+                                <option value="0" {{#unless thisUser.isInstructor}}selected{{/unless}}>Deaktiviert</option>
+                                <option value="1" {{#if thisUser.isInstructor}}selected{{/if}}>Aktiviert</option>
                             </select>
                         </div>
                         <br>

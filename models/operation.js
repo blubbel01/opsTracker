@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         location: DataTypes.STRING,
         proof: DataTypes.TEXT,
         valid: DataTypes.BOOLEAN,
+        amount: DataTypes.INTEGER,
         timestamp: DataTypes.DATE,
     }, {
         sequelize,

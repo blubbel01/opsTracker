@@ -56,6 +56,9 @@
                                     <a class="dropdown-item {{ternary (isRouteActive '/leader/roles' req.originalUrl) 'active' '' }}" href="/leader/roles">
                                         <i class="fas fa-list"></i> Rollenverwaltung
                                     </a>
+                                    <a class="dropdown-item {{ternary (isRouteActive '/leader/faction' req.originalUrl) 'active' '' }}" href="/leader/faction">
+                                        <i class="fas fa-list"></i> Fraktionsverwaltung
+                                    </a>
                                     <a class="dropdown-item {{ternary (isRouteActive '/leader/operationTypes' req.originalUrl) 'active' '' }}" href="/leader/operationTypes">
                                         <i class="fas fa-list"></i> Aktionsverwaltung
                                     </a>

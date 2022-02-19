@@ -3,6 +3,7 @@ let tempMoney = 9999;
 const moment = require('moment');
 moment.locale('de');
 const {Op} = require('sequelize');
+const {Payment} = require("../helpers/payment");
 
 exports.index = async (req, res) => {
 
@@ -65,83 +66,26 @@ exports.setTempMoney = async (req, res) => {
     return res.redirect('/payment');
 };
 exports.payment = async (req, res) => {
-    const operations = await db.models.Operation.findAll({
-        include: [
-            "OperationType",
-            {
-                association: "Users"
-            }
-        ],
-        where: {
-            timestamp: {
-                [Op.and]: [
-                    {
-                        [Op.gte]: moment().startOf("week")
-                    },
-                    {
-                        [Op.lte]: moment().endOf("week")
-                    }
-                ]
-            }
-        }
-    });
-
-    const members = {};
-    let totalPoints = 0;
-    operations.forEach(op => {
-        if (op.valid) {
-            const points = op.OperationType.points;
-            op.Users.forEach(u => {
-                totalPoints += points;
-                if (members[u.id]) {
-                    members[u.id].points += points;
-                } else {
-                    members[u.id] = {
-                        name: u.name,
-                        points,
-                        proportion: 0,
-                        money: 0,
-                    };
-                }
-            });
-        }
-    });
-
-    Object.keys(members).forEach(name => {
-        members[name].money = totalPoints > 0 ? (members[name].points / totalPoints) * tempMoney : (Object.keys(members).length / tempMoney) * tempMoney;
-    });
-
-    let membersArray = [];
-
     const users = await db.models.User.findAll({
-        include: "Role"
+        where: {
+            isGettingPayed: true,
+        },
+        include: [
+            db.models.Role,
+            db.models.Faction,
+        ],
     });
 
-    users.forEach(user => {
-        if (!!user.Role) {
-            membersArray.push({
-                name: user.name,
-                roleName: user.Role.name,
-                sortId: user.Role.permissionLevel,
-                points: !!members[user.id] ? members[user.id].points : 0,
-                money: !!members[user.id] ? members[user.id].money : 0,
-            });
-        }
-    });
-
-    membersArray = membersArray
-        .sort((a, b) => {
-            return b.money - a.money;
-        })
-        .sort((a, b) => {
-            return b.sortId - a.sortId;
-        });
+    await Promise.all(users.map(async (user) => {
+        const payment = await Payment.getUserPayment(user.id, moment().startOf("week"), moment().endOf("week"));
+        user.totalMoney = payment.totalMoney;
+        user.operationMoney = payment.operationMoney;
+        user.instructorMoney = payment.instructorMoney;
+    }));
 
     res.render('tracker/operations/payment', {
         title: 'Auszahlung',
-        members: membersArray,
-        paymentMoneyTotal: tempMoney,
-        totalPoints,
+        users,
     });
 };
 exports.create = async (req, res) => {
