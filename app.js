@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -9,8 +11,6 @@ const {flash} = require('express-flash-message')
 const Utility = require('./helpers/utility');
 const auth = require('./helpers/authentification');
 const hbsLocals = require('./helpers/hbs-locals')();
-
-require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const leaderRouter = require('./routes/leader');
