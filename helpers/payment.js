@@ -104,6 +104,15 @@ class Payment {
         });
         const data = await Payment.getPaymentData();
 
+        if (!user) {
+            console.error(`USER NOF FOUND! ID = ${userId}`);
+            return {
+                instructorMoney: 0,
+                operationMoney: 0,
+                totalMoney: 0,
+            }
+        }
+
         let instructorMoney = 0;
         if (user.isInstructor) {
             instructorMoney += (data.totalMoney * PARAMETERS.instructionMultiplier) / data.instructorCount;
