@@ -19,7 +19,10 @@ module.exports = () => {
             req.user = await db.models.User.findByPk(auth.getUser(req.session.id), {
                 include: [
                     {
-                        association: "Role"
+                        model: db.models.Role,
+                    },
+                    {
+                        model: db.models.Faction
                     }
                 ]
             });
@@ -31,12 +34,24 @@ module.exports = () => {
                         name: "",
                         id: -1,
                     }
+
+                    if (req.user.id === 1) {
+                        req.user.Faction = {
+                            name: "IS_SETUP",
+                            id: -1,
+                        }
+
+                        req.user.Role = {
+                            permissionLevel: 5,
+                            name: "IS_SETUP",
+                            id: -1,
+                        }
+                    }
                 }
 
-                if (process.env.IS_SETUP) {
-                    req.user.Role = {
-                        permissionLevel: 5,
-                        name: "IS_SETUP",
+                if (!req.user.Faction) {
+                    req.user.Faction = {
+                        name: "",
                         id: -1,
                     }
                 }

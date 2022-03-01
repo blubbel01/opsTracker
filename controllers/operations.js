@@ -7,17 +7,13 @@ const {Payment} = require("../helpers/payment");
 
 exports.index = async (req, res) => {
 
-    const startDate = moment(Date.now() - (30 * 60 * 1000));
-
     const operations = (await db.models.Operation.findAll({
         include: [
             "OperationType",
             "Users",
         ],
         where: {
-            timestamp: {
-                [Op.gte]: startDate
-            }
+            valid: false,
         }
     })).filter(o => !o.valid);
 

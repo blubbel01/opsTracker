@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             this.belongsToMany(models.Operation, {through: 'user_operation'});
             this.belongsTo(models.Role, {foreignKey: 'roleId'});
             this.belongsTo(models.Faction, {foreignKey: 'factionId'});
+            this.hasMany(models.OperationUserTotalOffset, {foreignKey: 'user'})
         }
     };
     User.init({

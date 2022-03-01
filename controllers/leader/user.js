@@ -70,29 +70,17 @@ exports.update = async (req, res) => {
     const role = await db.models.Role.findByPk(roleId);
     const faction = await db.models.Faction.findByPk(factionId);
 
-    if (!role) {
-        await req.flash('error', 'Ausgewählter Rang existiert nicht!');
-        return res.redirect("/leader/users");
-    }
-
-    if (!faction) {
-        await req.flash('error', 'Ausgewählte Fraktion existiert nicht!');
-        return res.redirect("/leader/users");
-    }
-
-    if (!process.env.IS_SETUP) {
-        if (req.user.Role.permissionLevel <= 4) {
-            if (role.permissionLevel >= req.user.Role.permissionLevel) {
-                await req.flash('error', 'Du kannst nur bis zu deinem eignen Rang setzten!');
-                return res.redirect("/leader/users");
-            }
+    if (req.user.Role.permissionLevel <= 4) {
+        if (role.permissionLevel >= req.user.Role.permissionLevel) {
+            await req.flash('error', 'Du kannst nur bis zu deinem eignen Rang setzten!');
+            return res.redirect("/leader/users");
         }
     }
 
 
     if (user) {
-        user.roleId = roleId;
-        user.factionId = factionId;
+        user.roleId = role ? roleId : null;
+        user.factionId = faction ? factionId : null;
         user.forumId = forumId;
         user.name = name;
         user.isGettingPayed = isGettingPayed;

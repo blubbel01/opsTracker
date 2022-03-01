@@ -78,31 +78,43 @@ class Payment {
      * @return {Promise<{totalMoney: number, instructorMoney: number, operationMoney: number}>}
      */
     static async getUserPayment(userId, startDate, endDate) {
-        const user = await db.models.User.findByPk(userId, {
+        const user = await db.models.User.findByPk(userId);
+        const operations = await db.models.Operation.findAll({
+            where: {
+                timestamp: {
+                    [Op.and]: [
+                        {
+                            [Op.gte]: startDate
+                        },
+                        {
+                            [Op.lte]: endDate
+                        }
+                    ]
+                }
+            },
             include: [
                 {
-                    model: db.models.Operation,
+                    model: db.models.OperationType,
+                },
+                {
+                    model: db.models.User,
                     where: {
-                        timestamp: {
-                            [Op.and]: [
-                                {
-                                    [Op.gte]: startDate
-                                },
-                                {
-                                    [Op.lte]: endDate
-                                }
-                            ]
-                        }
+                        id: user.id,
                     },
-                    include: [
-                        {
-                            model: db.models.OperationType,
-                        }
-                    ],
+                    attributes: [],
                 }
-            ]
+            ],
         });
         const data = await Payment.getPaymentData();
+
+        if (!user) {
+            console.error(`USER NOF FOUND! ID = ${userId}`);
+            return {
+                instructorMoney: 0,
+                operationMoney: 0,
+                totalMoney: 0,
+            }
+        }
 
         let instructorMoney = 0;
         if (user.isInstructor) {
@@ -110,7 +122,7 @@ class Payment {
         }
 
         let operationMoney = 0;
-        user.Operations.forEach(({amount, OperationType}) => {
+        operations.forEach(({amount, OperationType}) => {
             const {value, countType} = OperationType;
 
             switch (countType) {

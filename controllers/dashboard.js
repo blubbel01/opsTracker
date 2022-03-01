@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const {sequelize: db} = require("../models");
 const saltRounds = 10;
 
 exports.index = async (req, res) => {

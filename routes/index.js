@@ -5,6 +5,7 @@ const auth = require('../helpers/authentification');
 const loginController = require("../controllers/login");
 const dashboardController = require("../controllers/dashboard");
 const operationController = require("../controllers/operations");
+const {sequelize: db} = require("../models");
 
 /* GET home page. */
 router.get('/', auth.isAuthenticated, dashboardController.index);

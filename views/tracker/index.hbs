@@ -5,13 +5,27 @@
         <div class="container">
             <div class="card col-12">
                 <div class="card-header">
-                    Wilkommen bei {{ env.GANG_NAME }}
+                    Wilkommen bei den Staatsfraktionen [{{ account.Faction.name }}]
                 </div>
                 <div class="card-body">
-                    <p class="card-text">Hier könnte ihre Werbung stehen!</p>
+
+                    {{#each operationType}}
+                        <div class="card" style="width: 200px;">
+                            <div class="card-header bg-dark text-white">
+                                <b>{{ this.name }}</b>
+                            </div>
+                            <div class="card-body" style="color: rgba(207,211,214,0.62); background-color: #1b1e21">
+                                <div>Diese Woche: <b>{{ this.thisWeek }}</b></div>
+                                <div>Insgesamt: <b>{{ this.total }}</b></div>
+                                <div>Einsatzleitung: <b>{{ this.operationLead }}</b></div>
+                                <div>Letzte Eintragung: <b>{{ this.lastOperationDate }}</b></div>
+                            </div>
+                        </div>
+                    {{/each}}
+
                 </div>
                 <div class="card-footer text-center text-muted">
-                    &copy; {{yearNow}} - Shepard <small>(Vio Development)</small>
+                    &copy; {{yearNow}} - Shepard
                 </div>
             </div>
         </div>
