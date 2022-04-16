@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
         name: DataTypes.STRING,
         value: DataTypes.INTEGER,
         countType: DataTypes.INTEGER,
+        needValidCheck: DataTypes.BOOLEAN,
+        timeOnDashboard: DataTypes.DOUBLE,
     }, {
         sequelize,
         modelName: 'OperationType',

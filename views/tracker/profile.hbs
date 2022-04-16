@@ -5,6 +5,27 @@
         <div class="container">
             <div class="card col-12">
                 <div class="card-header">
+                    <div class="card-title">Profil von {{account.name}}</div>
+                </div>
+                <div class="card-body">
+                    Fraktion: {{account.Faction.name}}
+                    <br>
+                    Rang: {{account.Role.name}}
+                    <br>
+                    {{#if account.isGettingPayed}}
+                        Erhält Aktionsauszahlung
+                    {{else}}
+                        <b class="text-danger">Aktionsauszahlung gesperrt!</b>
+                        <br>
+                        <small class="text-muted">Handelt es sich um einen Fehler, melde dich bitte bei einem Leader!</small>
+                    {{/if}}
+                    <br>
+                    {{#if account.isInstructor}}<span class="text-muted">Erhält Ausbildergehalt</span>{{/if}}
+                </div>
+            </div>
+            <br>
+            <div class="card col-12">
+                <div class="card-header">
                     <div class="card-title">Passwort ändern</div>
                 </div>
                 <div class="card-body">

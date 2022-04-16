@@ -9,7 +9,51 @@
                 </div>
                 <div class="card-body">
 
-                    {{#each operationType}}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Fraktion: {{account.Faction.name}}</li>
+                        <li class="list-group-item">Rang: {{account.Role.name}}</li>
+                        <li class="list-group-item">
+                            {{#if account.isGettingPayed}}
+                                Erhält Aktionsauszahlung
+                            {{else}}
+                                <b class="text-danger">Aktionsauszahlung gesperrt!</b>
+                                <br>
+                                <small class="text-muted">Handelt es sich um einen Fehler, melde dich bitte bei einem Leader!</small>
+                            {{/if}}
+                        </li>
+                        {{#if account.isInstructor}}
+                        <li class="list-group-item">
+                            Polizeiakademie Ausbilder.
+                        </li>
+                        {{/if}}
+                        {{#if account.isGettingPayed}}
+                            <li class="list-group-item col-4">
+                                {{#if account.isInstructor}}
+                                    <b>Gehaltsabrechnung</b>
+                                    <table class="table">
+                                        <tbody>
+                                        <tr class="text-muted">
+                                            <td>Aktionen</td>
+                                            <td>{{money thisWeekPayment.operationMoney}}</td>
+                                        </tr>
+                                        <tr class="text-muted">
+                                            <td>Ausbilder</td>
+                                            <td>{{money thisWeekPayment.instructorMoney}}</td>
+                                        </tr>
+                                        <tr class="text-primary">
+                                            <td><b>Gesamt</b></td>
+                                            <td><b>{{money thisWeekPayment.totalMoney}}</b></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                {{else}}
+                                    Gehalt: {{money thisWeekPayment.totalMoney}}
+                                {{/if}}
+                            </li>
+                        {{/if}}
+                    </ul>
+
+                    {{#each operationTypeStats}}
                         <div class="card" style="width: 200px;">
                             <div class="card-header bg-dark text-white">
                                 <b>{{ this.name }}</b>
@@ -21,6 +65,36 @@
                                 <div>Letzte Eintragung: <b>{{ this.lastOperationDate }}</b></div>
                             </div>
                         </div>
+                    {{/each}}
+
+                    {{#each operationType}}
+                        {{#if this.Operations}}
+                            <div class="card">
+                                <div class="card-header">
+                                    <b>{{ this.name }}</b>
+                                </div>
+                                <div class="card-body bg-primary">
+                                    <div class="d-flex flex-row flex-wrap">
+                                        {{#each this.Operations}}
+                                            <div class="card m-1 bg-dark" style="width: 18rem;">
+                                                <div class="card-body">
+                                                    <p class="card-text text-center">
+                                                        Ort: <b>{{this.location}}</b><br />
+                                                        Zeitpunkt: {{formatTime this.timestamp}}<br />
+                                                    </p>
+
+                                                    <div class="card-text d-flex flex-wrap justify-content-evenly">
+                                                        {{#each this.Users}}
+                                                            <span class="badge bg-light m-1">{{this.name}}</span>
+                                                        {{/each}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
                     {{/each}}
 
                 </div>

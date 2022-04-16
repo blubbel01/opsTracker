@@ -3,6 +3,7 @@ const Utility = require('../helpers/utility');
 const bcrypt = require('bcrypt');
 const auth = require('../helpers/auth');
 const saltRounds = 10;
+const cheerio = require('cheerio');
 
 exports.login = (req, res) => {
     res.render('tracker/login', {title: 'Anmelden'});
@@ -27,6 +28,20 @@ exports.loginSubmit = async (req, res) => {
         await req.flash('error', 'Das Passwort stimmt nicht überein!');
         return res.redirect('/login');
     }
+
+
+    (async () => {
+        try {
+            const body = await Utility.asyncFetch(`https://forum.vio-v.com/index.php?user/${loginUser.forumId}`);
+            const $ = cheerio.load(body);
+            const changeUsername = $('meta[property="profile:username"]').attr('content');
+
+            if (changeUsername != loginUser.name) {
+                loginUser.name = changeUsername;
+                loginUser.save();
+            }
+        } catch (_) {}
+    })();
 
     auth.setUser(req.session.id, loginUser.id);
     res.redirect("/");

@@ -1,6 +1,7 @@
 const isUrl = require('is-url');
 const db = require('../models').sequelize;
 const moment = require('moment');
+const {val} = require("cheerio/lib/api/attributes");
 moment.locale('de');
 
 module.exports = async function (hbs) {
@@ -178,5 +179,17 @@ module.exports = async function (hbs) {
         return text.replace(urlRegex, function(url) {
             return '<a href="' + url + '">' + url + '</a>';
         });
+    });
+
+    hbs.registerHelper("getOperationMoney", function (operation) {
+        operation = operation.toJSON();
+        switch (operation.OperationType.countType) {
+            case 0: // operation.amount = money
+                return operation.value;
+            case 1: // OperationType.value = money
+                return operationMoney += operation.OperationType.value;
+            case 2: // OperationType.value * operation.amount = money
+                return operationMoney += operation.OperationType.value * value;
+        }
     });
 };

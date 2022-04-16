@@ -18,8 +18,30 @@
                         </div>
                         <br>
                         <div class="form-group">
-                            <label for="inputPoints">Punkte pro Eintrag</label>
-                            <input type="number" min="0" step="1" class="form-control" id=inputPointsinputPermission" placeholder="z.B. 15" name="points" required>
+                            <label for="countType">Berechnung (A: TypenWert, B: AktionsWert, G: Gehalt)</label>
+                            <select class="form-select" id="countType" name="countType" required>
+                                <option value="2">G = A * B</option>
+                                <option value="1">G = A</option>
+                                <option value="0">G = B</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="value">TypenWert (Geld)</label>
+                            <input type="number" min="0" step="1" value="0"  class="form-control" id=value" placeholder="100" name="value" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="needValidCheck">Benötigt Bestätigung durch Leader</label>
+                            <select class="form-select" id="needValidCheck" name="needValidCheck" required>
+                                <option value="1">Ja</option>
+                                <option value="0">Nein</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="timeOnDashboard">Dashboard Anzeigedauer in Stunden (0: aus)</label>
+                            <input type="number" min="0" step=".1" value="0" class="form-control" id=timeOnDashboard" placeholder="100" name="timeOnDashboard" required>
                         </div>
                         <br>
                         <button type="submit" class="btn btn-primary">Erstellen</button>

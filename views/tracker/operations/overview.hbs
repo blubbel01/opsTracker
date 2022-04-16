@@ -27,12 +27,6 @@
                         </div>
                         <div class="col-md-3 col-sm-2">
                             <div class="form-group">
-                                <label for="inputTime2">Geld</label>
-                                <input type="number" class="form-control" id="inputMoney" placeholder="" name="money" min="0" value="{{this.money}}" required>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-2">
-                            <div class="form-group">
                                 <button type="submit" class="btn btn-primary mt-4">Suchen</button>
                             </div>
                         </div>
@@ -46,19 +40,23 @@
                         <thead>
                         <tr>
                             <th scope="col">Name</th>
+                            <th scope="col">Fraktion</th>
                             <th scope="col">Rang</th>
-                            <th scope="col">Punkte</th>
-                            <th scope="col">Money</th>
+                            <th scope="col">Ausbildergehalt</th>
+                            <th scope="col">Aktionsgehalt</th>
+                            <th scope="col">Gehalt</th>
                         </tr>
                         </thead>
                         <tbody>
 
-                        {{#each members}}
+                        {{#each users}}
                             <tr>
                                 <td>{{this.name}}</td>
-                                <td>{{this.roleName}}</td>
-                                <td>{{this.points}}</td>
-                                <td>{{money this.money}}</td>
+                                <td>{{this.Faction.name}}</td>
+                                <td>{{this.Role.name}}</td>
+                                <td>{{money this.instructorMoney}}</td>
+                                <td>{{money this.operationMoney}}</td>
+                                <td>{{money this.totalMoney}}</td>
                             </tr>
                         {{/each}}
 

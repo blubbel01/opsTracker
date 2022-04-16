@@ -9,12 +9,13 @@
                     <a href="/leader/operationTypes/create" class="btn btn-outline-success float-end"><i class="fa fa-plus"></i></a>
                 </div>
                 <div class="card-body">
+                    <small class="text-muted">A: TypenWert<br> B: AktionsWert<br> G: Gehalt</small>
                     <table class="table">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Punkte pro Eintrag</th>
+                            <th scope="col">Berechnung</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -24,7 +25,17 @@
                             <tr>
                                 <td>{{this.id}}</td>
                                 <td>{{this.name}}</td>
-                                <td>{{this.points}}</td>
+                                <td>
+                                    {{#if (eq this.countType 0)}}
+                                        G = B
+                                    {{/if}}
+                                    {{#if (eq this.countType 1)}}
+                                        G = {{money this.value}}
+                                    {{/if}}
+                                    {{#if (eq this.countType 2)}}
+                                        G = {{money this.value}} * B
+                                    {{/if}}
+                                </td>
                                 <td>
                                     <a href="/leader/operationTypes/{{this.id}}" class="btn btn-outline-light"><i class="fa fa-edit"></i></a>
                                     <a href="/leader/operationTypes/{{this.id}}/delete" class="btn btn-outline-danger"><i class="fa fa-times"></i></a>

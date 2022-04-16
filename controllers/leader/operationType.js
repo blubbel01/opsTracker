@@ -15,14 +15,23 @@ exports.create = async (req, res) => {
     });
 }
 exports.store = async (req, res) => {
-    const {points, name} = req.body;
-    if (!points || !name || name.length < 1 || isNaN(points)) {
+    const {
+        countType,
+        value,
+        name,
+        needValidCheck,
+        timeOnDashboard,
+    } = req.body;
+    if (isNaN(countType) || isNaN(value) || name == null || needValidCheck == null || name.length < 1) {
         return res.redirect("/leader/operationTypes/create");
     }
 
     const operationType = await db.models.OperationType.create({
         name,
-        points: parseInt(points),
+        countType,
+        value,
+        needValidCheck,
+        timeOnDashboard: timeOnDashboard || 0,
     });
 
     await req.flash('success', `Du hast erfolgreich den Operationstyp ${operationType.name} erstellt. (Punkte: ${operationType.points})`);
@@ -44,11 +53,16 @@ exports.show = async (req, res) => {
 };
 exports.update = async (req, res) => {
     const {id} = req.params;
-    const {points, name} = req.body;
+    const {
+        countType,
+        value,
+        name
+    } = req.body;
     const operationType = await db.models.OperationType.findByPk(id);
 
     if (operationType) {
-        operationType.points = points;
+        operationType.countType = countType;
+        operationType.value = value;
         operationType.name = name;
         await operationType.save();
         await req.flash('success', `Du hast den Operationstyp ${operationType.name} erfolgreich bearbeitet!`);

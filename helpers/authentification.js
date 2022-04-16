@@ -16,6 +16,13 @@ class Authentication {
         res.redirect('/');
     }
 
+    static getsPayed(req, res, next) {
+        if (!req.user)
+            return next();
+
+        res.redirect('/');
+    }
+
     static hasRank(minRank) {
         return function(req, res, next) {
 

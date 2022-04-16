@@ -4,6 +4,7 @@ const moment = require('moment');
 moment.locale('de');
 const {Op} = require('sequelize');
 const {Payment} = require("../helpers/payment");
+const utilityHelper = require('../helpers/utility');
 
 exports.index = async (req, res) => {
 
@@ -30,6 +31,11 @@ exports.index = async (req, res) => {
     });
 };
 exports.setMembership = async (req, res) => {
+    if (!req.user.isGettingPayed) {
+        await req.flash('error', 'Du bist dazu nicht befugt!');
+        return res.redirect('/operations');
+    }
+
     const {
         id
     } = req.body;
@@ -92,7 +98,7 @@ exports.create = async (req, res) => {
     });
 };
 exports.store = async (req, res) => {
-    const {operation, date, time, location, proofs, tsValidate} = req.body;
+    const {operation, date, time, location, proofs, tsValidate, value} = req.body;
     const timestamp = Date.parse(`${date}T${time}`);
 
     if (operation == "" || !operation || isNaN(operation)) {
@@ -105,25 +111,97 @@ exports.store = async (req, res) => {
         return res.redirect('/operations/create');
     }
 
-    const syncedUsers = (await db.models.User.findAll())
-        .filter(u => u.roleId)
-        .filter(u => tsValidate.includes(u.name));
+    const tsValidateArray = tsValidate.split(' ');
 
+    const syncedUsers = (await db.models.User.findAll({
+        where: {
+            isGettingPayed: true,
+        }
+    }))
+        .filter(u => u.roleId)
+        .filter(u => tsValidateArray.includes(u.name));
+
+    const key = utilityHelper.generateRandomString(5).toUpperCase();
+
+    const operationType = await db.models.OperationType.findByPk(operation);
+
+    if (!operationType) {
+        await req.flash('error', 'Der angegebene Aktionstyp ist ungültig!');
+        return res.redirect('/operations/create');
+    }
 
     const newOp = await db.models.Operation.create({
-        type: Number(operation),
-        location: location,
+        value,
+        location,
+        key,
+        type: operationType.id,
+        valid: !operationType.needValidCheck,
         proof: proofs,
-        valid: false,
         timestamp: timestamp,
+        creatorId: req.user.id,
     });
 
     syncedUsers.forEach(u => {
         newOp.addUser(u);
     });
 
-    await req.flash('success', 'Die Aktion wurde erfolgreich eingetragen.');
+    await req.flash('success', `Die Aktion wurde erfolgreich eingetragen. (Key: ${newOp.id}#${key}${utilityHelper.getCheckStringChar(`${newOp.id}${key}`)})`);
     return res.redirect('/operations');
+};
+
+exports.join = async (req, res) => {
+    const {key: input} = req.body;
+
+    const [id, fullKey] = input.split('#');
+    const key = fullKey.substr(0, fullKey.length - 1);
+
+    if (!utilityHelper.checkString(`${id}${fullKey}`)) {
+        await req.flash('error', 'Der Schlüssel wurde falsch abgeschrieben. Bitte überprüfe, ob jedes Zeichen übereinstimmt!');
+        return res.redirect('/operations');
+    }
+
+    const operation = await db.models.Operation.findByPk(id, {
+        include: [
+            "OperationType",
+            "Users"
+        ]
+    });
+
+    if (!operation) {
+        await req.flash('error', `Aktion #${id} konnte nicht gefunden werden.`);
+        return res.redirect('/operations');
+    }
+
+    if (operation.key != key) {
+        await req.flash('error', 'Der angegebene Schlüssel ist falsch!');
+        return res.redirect('/operations');
+    }
+
+    if (!operation.Users.find(u => u.id === req.user.id)) {
+        await operation.addUser(req.user);
+        await req.flash('success', `Du hast dich erfolgreich in die Aktion ${operation.OperationType.name}#${operation.id} eingetragen.`);
+    }
+
+    return res.redirect('/operations');
+};
+exports.leave = async (req, res) => {
+    const {id} = req.body;
+
+    const operation = await db.models.Operation.findByPk(id, {
+        include: [
+            "OperationType",
+            "Users"
+        ]
+    });
+
+    if (!operation) {
+        await req.flash('error', 'Die Aktion wurde nicht gefunden.');
+        return res.redirect('/operations');
+    }
+    await operation.removeUser(req.user);
+
+    await req.flash('success', 'Du hast dich erfolgreich aus der Aktion ');
+    res.redirect('/operations');
 };
 
 exports.managementIndex = async (req, res) => {
@@ -142,7 +220,7 @@ exports.managementIndex = async (req, res) => {
 
     // return res.json(operations);
 
-    res.render('tracker/operations/admin', {
+    res.render('tracker/operations/manage', {
         title: 'Aktionsverwaltung',
         operations,
     });
@@ -251,7 +329,7 @@ exports.managementRemoveUser = async (req, res) => {
 };
 
 exports.statisticsIndex = async (req, res) => {
-    let {start, stop, money} = req.query;
+    let {start, stop} = req.query;
     if (start && stop) {
         start = new Date(start).getTime();
         stop = new Date(stop).getTime();
@@ -260,82 +338,27 @@ exports.statisticsIndex = async (req, res) => {
         stop = moment().endOf("week");
     }
 
-    money = Number(money) || 0;
-
-
-    const operations = await db.models.Operation.findAll({
-        include: [
-            "OperationType",
-            {
-                association: "Users"
-            }
-        ],
-        where: {
-            timestamp: {
-                [Op.and]: [
-                    {
-                        [Op.gte]: start
-                    },
-                    {
-                        [Op.lte]: stop
-                    }
-                ]
-            }
-        }
-    });
-
-    const members = {};
-    let totalPoints = 0;
-    operations.forEach(op => {
-        if (op.valid) {
-            const points = op.OperationType.points;
-            op.Users.forEach(u => {
-                totalPoints += points;
-                if (members[u.id]) {
-                    members[u.id].points += points;
-                } else {
-                    members[u.id] = {
-                        name: u.name,
-                        points,
-                    };
-                }
-            });
-        }
-    });
-
-    let membersArray = [];
-
     const users = await db.models.User.findAll({
-        include: "Role"
+        where: {
+            isGettingPayed: true,
+        },
+        include: [
+            db.models.Role,
+            db.models.Faction,
+        ],
     });
 
-    users.forEach(user => {
-        if (!!user.Role) {
-            const points = !!members[user.id] ? members[user.id].points : 0;
-            membersArray.push({
-                name: user.name,
-                roleName: user.Role.name,
-                sortId: user.Role.permissionLevel,
-                points,
-                money: Math.floor((money / (totalPoints === 0 ? 1 : totalPoints)) * points),
-            });
-        }
-    });
-
-    membersArray = membersArray
-        .sort((a, b) => {
-            return b.points - a.points;
-        })
-        .sort((a, b) => {
-            return b.sortId - a.sortId;
-        });
+    await Promise.all(users.map(async (user) => {
+        const payment = await Payment.getUserPayment(user.id, start, stop);
+        user.totalMoney = payment.totalMoney;
+        user.operationMoney = payment.operationMoney;
+        user.instructorMoney = payment.instructorMoney;
+    }));
 
     res.render('tracker/operations/overview', {
         title: 'Auszahlung - Statistik',
-        members: membersArray,
-        totalPoints,
+        users,
         start: moment.unix(new Date(start).getTime() / 1000).format('YYYY-MM-DD'),
         stop: moment.unix(new Date(stop).getTime() / 1000).format('YYYY-MM-DD'),
-        money,
     });
 };

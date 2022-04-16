@@ -14,6 +14,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Aktion</th>
+                            <th scope="col">Key</th>
                             <th scope="col">Aktionszeitpunkt</th>
                             <th scope="col" style="width: 15%;">Nachtragen</th>
                             <th scope="col">Teilnehmer</th>
@@ -27,6 +28,7 @@
                             <tr>
                                 <td>{{this.id}}</td>
                                 <td>{{this.OperationType.name}}</td>
+                                <td>{{this.key}}</td>
                                 <td>{{formatTime this.timestamp}}</td>
                                 <td>
                                     <form action="/operations/manage/{{this.id}}/addUser" method="post">
@@ -54,7 +56,11 @@
                                     {{/each}}
 
                                 </td>
-                                <td>{{urlify this.proof}}</td>
+                                <td>
+                                    {{#if this.proof}}
+                                        {{urlify this.proof}}
+                                    {{/if}}
+                                </td>
                                 <td>
                                     <a href="/operations/manage/{{this.id}}/validate" class="btn btn-success"><i class="fa fa-check"></i></a>
                                     <a href="/operations/manage/{{this.id}}/delete" class="btn btn-outline-danger"><i class="fa fa-trash"></i></a>

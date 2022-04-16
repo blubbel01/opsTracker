@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             this.belongsTo(models.OperationType, {foreignKey: "type"});
+            this.belongsTo(models.User, {foreignKey: "creatorId", as: 'creator'});
             this.belongsToMany(models.User,{through: "user_operation"});
         }
     };
@@ -19,8 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         location: DataTypes.STRING,
         proof: DataTypes.TEXT,
         valid: DataTypes.BOOLEAN,
-        amount: DataTypes.INTEGER,
+        value: DataTypes.INTEGER,
         timestamp: DataTypes.DATE,
+        creatorId: DataTypes.INTEGER,
+        key: DataTypes.STRING,
     }, {
         sequelize,
         modelName: 'Operation',

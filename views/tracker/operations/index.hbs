@@ -5,32 +5,54 @@
         <div class="container">
             <div class="card col-12">
                 <div class="card-header">
-                    Aktionsliste
+                    <div class="flex-row">
+                        Aktionsliste
 
-                    <a href="/operations/create" class="btn btn-outline-success float-end"><i class="fa fa-plus"></i></a>
+                        <a href="/operations/create" class="btn btn-outline-success float-end"><i class="fa fa-plus"></i></a>
+                    </div>
                 </div>
 
                 <div class="card-body">
 
                     <div class="d-flex flex-wrap">
 
+                        {{#if account.isGettingPayed}}
+                            <div class="card m-1" style="width: 18rem;">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h5 class="card-title mt-auto mb-auto">In Aktion eintragen</h5>
+                                    <form method="post">
+                                        <input type="hidden" name="id" value="{{this.id}}">
+                                    </form>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/operations/join" method="post">
+                                        <div class="input-group mb-3">
+                                            <input type="hidden" name="id" placeholder="9999#ABCDE" />
+                                            <input class="form-control" type="text" name="key" placeholder="9999#ABCDE" />
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-success" type="submit"><i class="fas fa-save"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        {{/if}}
+
                         {{#each operations}}
                             <div class="card m-1" style="width: 18rem;">
                                 <div class="card-header d-flex justify-content-between">
                                     <h5 class="card-title mt-auto mb-auto">{{this.OperationType.name}}</h5>
-                                    <form method="post">
+                                    {{#if this.isOwnMember}}
+                                    <form method="post" action="/operations/leave">
                                         <input type="hidden" name="id" value="{{this.id}}">
-                                        {{#if this.isOwnMember}}
-                                            <button type="submit" class="btn btn-outline-warning float-end"><i class="fas fa-minus"></i></button>
-                                        {{else}}
-                                            <button type="submit" class="btn btn-outline-success float-end"><i class="fas fa-plus"></i></button>
-                                        {{/if}}
+                                        <button type="submit" class="btn btn-outline-warning float-end"><i class="fas fa-minus"></i></button>
                                     </form>
+                                    {{/if}}
                                 </div>
                                 <div class="card-body">
                                     <p class="card-text text-center">
                                         Ort: <b>{{this.location}}</b><br />
-                                        Zeitpunkt: {{formatTime this.time}}
+                                        Zeitpunkt: {{formatTime this.timestamp}}<br />
                                     </p>
 
                                     <div class="card-text d-flex flex-wrap justify-content-evenly">

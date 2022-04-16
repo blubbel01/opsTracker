@@ -117,23 +117,26 @@ class Payment {
         }
 
         let instructorMoney = 0;
+
         if (user.isInstructor) {
             instructorMoney += (data.totalMoney * PARAMETERS.instructionMultiplier) / data.instructorCount;
         }
 
         let operationMoney = 0;
-        operations.forEach(({amount, OperationType}) => {
+        operations
+            .filter(({valid}) => valid)
+            .forEach(({value: typeValue, OperationType}) => {
             const {value, countType} = OperationType;
 
             switch (countType) {
                 case 0: // operation.amount = money
-                    operationMoney += amount;
-                    break;
-                case 1: // OperationType.value = money
                     operationMoney += value;
                     break;
+                case 1: // OperationType.value = money
+                    operationMoney += typeValue;
+                    break;
                 case 2: // OperationType.value * operation.amount = money
-                    operationMoney += amount * value;
+                    operationMoney += typeValue * value;
                     break;
             }
         });

@@ -1,10 +1,36 @@
+const {Op} = require('sequelize');
+
+const {Payment} = require('../helpers/payment');
 const bcrypt = require('bcrypt');
 const {sequelize: db} = require("../models");
+const moment = require("moment");
 const saltRounds = 10;
 
 exports.index = async (req, res) => {
+    const thisWeekPayment = await Payment.getUserPayment(req.user.id, moment().startOf("week"), moment().endOf("week"));
+
+    const operationType = await db.models.OperationType.findAll({
+        include: [
+            {
+                model: db.models.Operation,
+                limit: 50,
+            }
+        ]
+    });
+
+    await Promise.all(operationType.map(async (type) => {
+        const maxLast = Date.now() - (type.timeOnDashboard) * 60 * 60 * 1000;
+        type.Operations.forEach(op => {
+            op.showOnDashboard = op.timestamp.getTime() > maxLast;
+        });
+        type.Operations = type.Operations.filter((a) => a.showOnDashboard);
+        return type;
+    }));
+
     res.render("tracker/index", {
         title: "Dashboard",
+        thisWeekPayment,
+        operationType,
     });
 };
 
